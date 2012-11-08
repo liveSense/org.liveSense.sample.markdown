@@ -1,11 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-  	<parent>
-    	<groupId>com.github.livesense</groupId>
-      	<artifactId>org.liveSense.parent</artifactId>
-      	<version>1-SNAPSHOT</version>
-  	</parent>
+	<parent>
+		<groupId>com.github.livesense</groupId>
+		<artifactId>org.liveSense.parent</artifactId>
+		<version>2-SNAPSHOT</version>
+		<relativePath>../org.liveSense.parent</relativePath>
+	</parent>
 	<artifactId>org.liveSense.sample.markdown</artifactId>
 	<packaging>bundle</packaging>
 	<description>Markdown sample</description>
@@ -16,6 +16,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -74,58 +75,6 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>development</id>
-
-			<properties>
-				<!-- Iniial bundle configurations (for example FsResource) -->
-				<Felix-Initial-Configuration>
-					configuration
-				</Felix-Initial-Configuration>
-				
-				<!-- initial content to be loaded on bundle installation -->
-				<Sling-Initial-Content>
-					nodes;overwrite:=true;uninstall:=true
-				</Sling-Initial-Content>
-				
-				<!-- Copy the files from filesystem to Bundle -->
-				<Include-Resource>
-					configuration=src/main/resources/configuration-dev,
-					nodes=src/main/resources/nodes,
-					nodetypes=src/main/resources/nodetypes,
-					{maven-resources}
-				</Include-Resource>
-
-				<!-- node types to be created -->
-				<Sling-Nodetypes>
-					nodetypes/markdownsample.cnd;reregister:=true
-				</Sling-Nodetypes>
-
-				<Export-Package>
-					org.liveSense.*
-				</Export-Package>
-
-				<Import-Package>
-					!javax.portlet.*,
-					*;resolution:=optional
-				</Import-Package>
-
-				<Embed-Dependency>
-					org.apache.sling.commons.osgi;inline="org/apache/sling/commons/osgi/OsgiUtil.*",
-					commons-lang;inline="org/apache/commons/lang/StringUtils.class",
-					commons-codec;inline="org/apache/commons/codec/binary/Base64.*
-					|org/apache/commons/codec/binary/Hex*
-					|org/apache/commons/codec/binary/StringUtils*
-					|org/apache/commons/codec/BinaryEncoder*
-					|org/apache/commons/codec/BinaryDecoder*
-					|org/apache/commons/codec/Encoder*
-					|org/apache/commons/codec/Decoder*
-					|org/apache/commons/codec/EncoderException*
-					|org/apache/commons/codec/DecoderException*"
-				</Embed-Dependency>
-			</properties>
-		</profile>
-
-		<profile>
 			<id>release</id>
 
 			<activation>
@@ -134,7 +83,9 @@
 
 			<properties>
 				<!-- Iniial bundle configurations (for example FsResource) -->
-				<Felix-Initial-Configuration></Felix-Initial-Configuration>
+				<Felix-Initial-Configuration>
+					configuration
+				</Felix-Initial-Configuration>
 				<!-- initial content to be loaded on bundle installation -->
 				<Sling-Initial-Content>
 					nodes;overwrite:=true;uninstall:=true,
@@ -181,7 +132,7 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
-	      	<groupId>com.github.livesense</groupId>
+			<groupId>com.github.livesense</groupId>
 			<artifactId>org.liveSense.scripting.jsp.taglib.jstl</artifactId>
 		</dependency>
 		<dependency>
@@ -192,12 +143,11 @@
 			<groupId>javax.jcr</groupId>
 			<artifactId>jcr</artifactId>
 		</dependency>
-		
+
 		<dependency>
-	      	<groupId>com.github.livesense</groupId>
+			<groupId>com.github.livesense</groupId>
 			<artifactId>org.liveSense.service.markdown</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		
+
 	</dependencies>
 </project>
