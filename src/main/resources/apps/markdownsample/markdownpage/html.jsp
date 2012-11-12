@@ -1,26 +1,26 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@page import="org.liveSense.service.markdown.MarkdownWrapper"%>
 <%@page import="org.liveSense.core.wrapper.JcrNodeWrapper"%>
 <%@page import="javax.jcr.NodeIterator"%>
 <%@page import="javax.jcr.query.Query"%>
 <%@page import="javax.jcr.query.QueryManager"%>
 <%@page import="javax.jcr.Node"%>
 <%@page import="org.liveSense.service.markdown.MarkdownService"%>
-<%@page import="org.pegdown.PegDownProcessor"%>
 
 <%@page session="false"%>
 <%@page contentType="text/html; charset=UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.0"%>
+<%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.1"%>
 <%@taglib prefix="json" uri="http://www.atg.com/taglibs/json"%>
 <sling:defineObjects />
 <%
 		// Get Node wrapper
 		JcrNodeWrapper node = new JcrNodeWrapper(currentNode);
+		pageContext.setAttribute("markdown", new MarkdownWrapper(sling.getService(MarkdownService.class)));
 		pageContext.setAttribute("node", node);
-		
 %>
 
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US"
@@ -40,10 +40,10 @@ body {
 </style>
 <link href="css/bootstrap-responsive.css" rel="stylesheet" />
 
-<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<![endif]-->
 
 <!-- Le fav and touch icons -->
 <link rel="shortcut icon" href="../assets/ico/favicon.ico" />
@@ -69,7 +69,7 @@ body {
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<c:forEach var="n"
-							items="${node['JCR_SQL2:SELECT [menu] FROM [markdownsample:markdownpage] WHERE [portalName] = \"markdownsample\" ORDER BY [menuOrder]']}">
+							items="${node['JCR_SQL2:SELECT * FROM [markdownsample:markdownpage] WHERE [portalName] = \"markdownsample\" ORDER BY [menuOrder]']}">
 							<c:choose>
 								<c:when test="${n.name == node.name}">
 									<li class="active"><a href="${n.name}.html">${n['menu']}</a></li>
@@ -128,118 +128,77 @@ body {
 								<div class="span12">
 									<legend>Links and references</legend>
 									<ul>
-										<li><a href="https://github.com/sirthias/pegdown">Pegdown
-												pure Java Markdown processor on GitHub</a></li>
-										<li><a
-											href="http://daringfireball.net/projects/markdown/syntax">Markdown
-												syntax by John Gruber</a></li>
-										<li><a
-											href="http://github.github.com/github-flavored-markdown/">GitHub
-												Flavored Markdown</a></li>
-										<li><a href="http://michelf.ca/projects/php-markdown/">PHP
-												Markdown Extra</a></li>
-										<li><a
-											href="http://twitter.github.com/bootstrap/index.html">Bootstrap
-												Framework</a></li>
+										<li><a href="https://github.com/sirthias/pegdown">Pegdown pure Java Markdown processor on GitHub</a></li>
+										<li><a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax by John Gruber</a></li>
+										<li><a href="http://github.github.com/github-flavored-markdown/">GitHub Flavored Markdown</a></li>
+										<li><a href="http://michelf.ca/projects/php-markdown/">PHP Markdown Extra</a></li>
+										<li><a href="http://twitter.github.com/bootstrap/index.html">Bootstrap Framework</a></li>
 									</ul>
 								</div>
 							</div>
-
-
 						</div>
-
-
 					</div>
 				</div>
 			</div>
-
 		</c:if>
 
 		<c:if test="${node.name != 'index'}">
-
 			<!-- Example row of columns -->
 			<div class="row-fluid">
 				<div class='span12'>
 				
-					<c:set var="samples" value = "JCR_SQL2:SELECT [menu] FROM [markdownsample:markdownpage] WHERE [portalName] = '${node.name}'"/>
-
-					<c:forEach var="n" items="${node['JCR_SQL2:SELECT [menu] FROM [markdownsample:markdownpage] WHERE [portalName] = \"markdownsample\" ORDER BY [menuOrder]']}">
-					</c:forEach>
-				</div>
-			</div>
-
-<%--				
-					<%
-	    			MarkdownService markdown_service = sling.getService(MarkdownService.class);
-	            	Node sample_node = currentNode;
-	            	String orig_text = null;
-	            	String html_text = null;
-	            	String code_text = null;
-					long display_order = 1;
-				
-	            	String sql = "SELECT [title] FROM [markdownsample:sample]  WHERE [parentMenu] = '" + currentNode.getName() + "' ORDER BY [displayOrder]";
-				
-	            	NodeIterator sample_siblings = sample_node.getSession().getWorkspace().getQueryManager().createQuery(sql, Query.JCR_SQL2).execute().getNodes();
-	            	if (sample_siblings.getSize() == 0) {
-						out.print("<div class='span12'><h4>No sample in the JCR repository!</h4></div>");
-					} else {
-	            		while (sample_siblings.hasNext()) {
-	            		sample_node = sample_siblings.nextNode();
-	            		orig_text = sample_node.getProperty("content").getString();
-	            		html_text = markdown_service.markdownToHtml(orig_text);
-	            		orig_text = orig_text.replace("\n", "<br />");
-	    				code_text = html_text.replace("<","&lt;");
-						code_text = code_text.replace(">","&gt;");
+					<c:set var="query" value = "JCR_SQL2:SELECT * FROM [markdownsample:sample] WHERE [portalName] = \"markdownsample\" AND [parentMenu] = \"${node.name}\" ORDER BY [displayOrder]"/>
+					<c:set var="iteratedElements" value = "0"/>
+					<c:forEach var="n" items="${node[query]}">
+						<c:set var="iteratedElements" value = "${iteratedElements+1}"/>
+						
+						<c:if test="${iteratedElements % 2 == 1}">
+							<div class='row-fluid'>
+						</c:if>
+						<div class="span6">
+							<div class="row-fluid">
+								<div class="span12">
+									<h4>${n['title']}</h4>
+									<p>${n['description']}</p>
+								</div>
+							</div>
+							</br>
 	
-	//					display_order = sample_node.getProperty("displayOrder").getLong();
-						if (display_order % 2 != 0) {
-							out.print("<div class='row-fluid'>");   
-						}
-					%>
-
-					<div class="span6">
-						<div class="row-fluid">
-							<div class="span12">
-								<h4><%=sample_node.getProperty("title").getString()%></h4>
-								<p><%=sample_node.getProperty("description").getString()%></p>
+							<h5>Markdown text</h5>
+							<div class="row-fluid">
+								<div class="alert alert span12">
+									<c:out value="${n['content'] }"/>
+								</div>
+							</div>
+							
+							<h5>HTML output</h5>
+							<div class="row-fluid">
+								<div class="alert alert-info span12">
+									<c:out value="${markdown[n['content']]}"></c:out>
+								</div>
+							</div>
+	
+							<h5>Output view</h5>
+							<div class="row-fluid">
+								<div class="span12 well">
+									${markdown[n['content']]}
+								</div>
 							</div>
 						</div>
-						</br>
-
-						<h5>Markdown text</h5>
-						<div class="row-fluid">
-							<div class="alert alert span12">
-								<%out.print(orig_text);%>
+						<c:if test="${iteratedElements % 2 == 0}">
 							</div>
+						</c:if>
+						
+					</c:forEach>
+					
+					<!-- If there is no pair of last block close the tag -->
+					<c:if test="${iteratedElements % 2 == 1}">
 						</div>
-
-						<h5>HTML output</h5>
-						<div class="row-fluid">
-							<div class="alert alert-info span12">
-								<%out.print(code_text);%>
-							</div>
-						</div>
-
-						<h5>Output view</h5>
-						<div class="row-fluid">
-							<div class="span12 well">
-								<%out.print(html_text);%>
-							</div>
-						</div>
-					</div>
-					<%
-						if (display_order % 2 == 0) {
-							out.print("</div>");   
-							if (display_order < sample_siblings.getSize()) {
-								out.print("<hr>");   
-							}
-						}
-						display_order = display_order + 1;
-	            	}
-	            }
-	            %>
---%>
-
+					</c:if>
+					
+					<c:if test="${iteratedElements == 0}">
+						<div class='span12'><h4>No sample in the JCR repository!</h4></div>
+					</c:if>
 				</div>
 			</div>
 		</c:if>
@@ -259,10 +218,6 @@ body {
 
 	</div>
 	<!-- /container -->
-
-
-	<!-- Le javascript
-    ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="js/jquery-1.8.2.min.js"></script>
 	<script src="js/bootstrap.js"></script>
