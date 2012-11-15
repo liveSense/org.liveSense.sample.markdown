@@ -93,10 +93,11 @@
 				</Sling-Initial-Content>
 
 				<!-- Delegate Bundle content as resource -->
+				<!-- 
 				<Sling-Bundle-Resources>
 					/apps/markdownsample,
 				</Sling-Bundle-Resources>
-
+				-->
 				<!-- node types to be created -->
 				<Sling-Nodetypes>
 					nodetypes/markdownsample.cnd;reregister:=true

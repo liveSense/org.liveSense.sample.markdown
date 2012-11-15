@@ -1,5 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@page import="org.liveSense.service.languageselector.LanguageSelectorService"%>
+<%@page import="javax.security.auth.callback.LanguageCallback"%>
+<%@page import="org.liveSense.core.wrapper.RequestWrapper"%>
+<%@page import="java.util.Locale"%>
 <%@page import="org.liveSense.service.markdown.MarkdownWrapper"%>
 <%@page import="org.liveSense.core.wrapper.JcrNodeWrapper"%>
 <%@page import="javax.jcr.NodeIterator"%>
@@ -18,7 +22,10 @@
 <sling:defineObjects />
 <%
 		// Get Node wrapper
-		JcrNodeWrapper node = new JcrNodeWrapper(currentNode);
+		LanguageSelectorService languageSelectorService = sling.getService(LanguageSelectorService.class);
+		Locale locale =  languageSelectorService.getLocaleByRequest(request);
+		JcrNodeWrapper node = new JcrNodeWrapper(currentNode, locale, true);
+
 		pageContext.setAttribute("markdown", new MarkdownWrapper(sling.getService(MarkdownService.class)));
 		pageContext.setAttribute("node", node);
 %>
@@ -30,7 +37,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>${node['title']}</title> <!-- Le styles -->
+	<title>${node.properties['title']}</title> <!-- Le styles -->
 	<link href="css/bootstrap.css" rel="stylesheet">
 		<style>
 body {
@@ -68,14 +75,15 @@ body {
 				</a> <a class="brand" href="#">liveSense Samples</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
+						<c:set var="query" value="SELECT * FROM [markdownsample:markdownpage] WHERE [portalName] = 'markdownsample' ORDER BY [menuOrder]"/>
 						<c:forEach var="n"
-							items="${node['JCR_SQL2:SELECT * FROM [markdownsample:markdownpage] WHERE [portalName] = \"markdownsample\" ORDER BY [menuOrder]']}">
+							items="${node.SQL2Query[query]}">
 							<c:choose>
 								<c:when test="${n.name == node.name}">
-									<li class="active"><a href="${n.name}.html">${n['menu']}</a></li>
+									<li class="active"><a href="${n.name}.html">${n.properties['menu']}</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${n.name}.html">${n['menu']}</a></li>
+									<li><a href="${n.name}.html">${n.properties['menu']}</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
@@ -87,13 +95,12 @@ body {
 	</div>
 
 	<div class="container-fluid">
-		${node['content']}
+		${node.properties['content']}
 
 		<c:if test="${node.name == 'index'}">
 			<div class="row-fluid">
-				<div class="span12">
+				<div class="span12">				
 					<div class="row-fluid">
-
 						<div class="span7">
 							<div class="hero-unit">
 								<h3>liveSense Markdown Sample</h3>
@@ -104,7 +111,7 @@ body {
 								<p>
 									<a href="http://www.github.com/sirthias/pegdown#readme"
 										class="btn btn-primary btn-large">Learn more about Pegdown
-										&raquo;</a>
+										»</a>
 								</p>
 							</div>
 						</div>
@@ -147,9 +154,9 @@ body {
 			<div class="row-fluid">
 				<div class='span12'>
 				
-					<c:set var="query" value = "JCR_SQL2:SELECT * FROM [markdownsample:sample] WHERE [portalName] = \"markdownsample\" AND [parentMenu] = \"${node.name}\" ORDER BY [displayOrder]"/>
+					<c:set var="query" value = "SELECT * FROM [markdownsample:sample] WHERE [portalName] = \"markdownsample\" AND [parentMenu] = \"${node.name}\" ORDER BY [displayOrder]"/>
 					<c:set var="iteratedElements" value = "0"/>
-					<c:forEach var="n" items="${node[query]}">
+					<c:forEach var="n" items="${node.SQL2Query[query]}">
 						<c:set var="iteratedElements" value = "${iteratedElements+1}"/>
 						
 						<c:if test="${iteratedElements % 2 == 1}">
@@ -158,8 +165,8 @@ body {
 						<div class="span6">
 							<div class="row-fluid">
 								<div class="span12">
-									<h4>${n['title']}</h4>
-									<p>${n['description']}</p>
+									<h4>${n.properties['title']}</h4>
+									<p>${n.properties['description']}</p>
 								</div>
 							</div>
 							</br>
@@ -167,21 +174,21 @@ body {
 							<h5>Markdown text</h5>
 							<div class="row-fluid">
 								<div class="alert alert span12">
-									<c:out value="${n['content'] }"/>
+									<c:out value="${n.properties['content'] }"/>
 								</div>
 							</div>
 							
 							<h5>HTML output</h5>
 							<div class="row-fluid">
 								<div class="alert alert-info span12">
-									<c:out value="${markdown[n['content']]}"></c:out>
+									<c:out value="${markdown[n.properties['content']]}"></c:out>
 								</div>
 							</div>
 	
 							<h5>Output view</h5>
 							<div class="row-fluid">
 								<div class="span12 well">
-									${markdown[n['content']]}
+									${markdown[n.properties['content']]}
 								</div>
 							</div>
 						</div>
