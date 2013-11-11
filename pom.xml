@@ -4,7 +4,7 @@
 		<groupId>com.github.livesense</groupId>
 		<artifactId>org.liveSense.parent</artifactId>
 		<version>2-SNAPSHOT</version>
-		<relativePath>../org.liveSense.parent</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.liveSense.sample.markdown</artifactId>
 	<packaging>bundle</packaging>
@@ -89,7 +89,8 @@
 				<!-- initial content to be loaded on bundle installation -->
 				<Sling-Initial-Content>
 					nodes;overwrite:=true;uninstall:=true,
-					content;overwrite:=false;uninstall:=true
+					content;overwrite:=false;uninstall:=true,
+					apps/markdownsample;overwrite:=true;uninstall:=true;path:=/apps/markdownsample
 				</Sling-Initial-Content>
 
 				<!-- Delegate Bundle content as resource -->
@@ -113,11 +114,6 @@
 
 				<!-- Copy the files from filesystem to Bundle -->
 				<Include-Resource>
-					SLING-INF/configuration=src/main/resources/configuration,
-					SLING-INF/nodes=src/main/resources/nodes,
-					SLING-INF/content=src/main/resources/content,
-					SLING-INF/nodetypes=src/main/resources/nodetypes,
-					apps=src/main/resources/apps,
 					{maven-resources}
 				</Include-Resource>
 
