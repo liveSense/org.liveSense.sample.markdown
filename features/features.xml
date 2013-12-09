@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><features name="liveSense-${liveSense.version}-sample-markdown" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 	<feature name="liveSense-sample-markdown" version="${liveSense.sample.markdown.version}" description="liveSense sample markdown">
         <feature>liveSense-service-markdown</feature>
-        <feature>liveSense-scripting-jsp-taglib-json</feature>
+        <feature>liveSense-scripting-jsp-taglib-jsonatg</feature>
         <feature>liveSense-scripting-jsp-taglib-jstl</feature>
         <feature>liveSense-service-languageSelector</feature>
  		<bundle>mvn:com.github.livesense/org.liveSense.sample.markdown/${liveSense.sample.markdown.version}</bundle>
