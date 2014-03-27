@@ -6,6 +6,11 @@
 		<version>2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
+	<scm>
+		<connection>scm:git:https://github.com/liveSense/org.liveSense.sample.markdown.git</connection>
+		<developerConnection>scm:git:https://github.com/liveSense/org.liveSense.sample.markdown.git</developerConnection>
+		<url>https://github.com/liveSense/org.liveSense.sample.markdown</url>
+	</scm>
 	<artifactId>org.liveSense.sample.markdown</artifactId>
 	<packaging>bundle</packaging>
 	<description>Markdown sample</description>
