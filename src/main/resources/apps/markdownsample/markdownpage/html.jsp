@@ -2,10 +2,10 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@page import="org.liveSense.service.languageselector.LanguageSelectorService"%>
 <%@page import="javax.security.auth.callback.LanguageCallback"%>
-<%@page import="org.liveSense.core.wrapper.RequestWrapper"%>
+<%@page import="org.liveSense.misc.jcrWrapper.RequestWrapper"%>
 <%@page import="java.util.Locale"%>
 <%@page import="org.liveSense.service.markdown.MarkdownWrapper"%>
-<%@page import="org.liveSense.core.wrapper.JcrNodeWrapper"%>
+<%@page import="org.liveSense.misc.jcrWrapper.JcrNodeWrapper"%>
 <%@page import="javax.jcr.NodeIterator"%>
 <%@page import="javax.jcr.query.Query"%>
 <%@page import="javax.jcr.query.QueryManager"%>
